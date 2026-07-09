@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>1000方块高性能动画</title>
+    <style>
+        * { margin: 0; padding: 0; }
+        body { 
+            overflow: hidden; 
+            touch-action: none; /* 禁用移动端双指缩放 */
+            background: #000;
+        }
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="main-canvas"></canvas>
+    <script type="module">
+        // 主线程代码 (内联)
+        const canvas = document.getElementById('main-canvas');
+        const worker = new Worker('./worker.js', { type: 'module' });
+        
+        // 移动端屏幕适配
+        function resizeCanvas() {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            
+            // 通知Worker新尺寸
+            worker.postMessage({
+                type: 'resize',
+                width: canvas.width,
+                height: canvas.height,
+                dpr
+            });
+        }
+
+        // 初始化 + 监听屏幕变化
+        window.addEventListener('load', resizeCanvas);
+        window.addEventListener('resize', () => {
+            // 防抖处理 (避免频繁触发)
+            clearTimeout(window.resizeTimeout);
+            window.resizeTimeout = setTimeout(resizeCanvas, 100);
+        });
+
+        // 将OffscreenCanvas转移给Worker
+        const offscreen = canvas.transferControlToOffscreen();
+        worker.postMessage({ type: 'init', canvas: offscreen }, [offscreen]);
+    </script>
+</body>
+</html>
