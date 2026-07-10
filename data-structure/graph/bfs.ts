@@ -1,4 +1,4 @@
-const { Graph } = require("./adjacency-list");
+import { Graph, Vertex } from './adjacency-list';
 /**
  *
  * @param {*} graph
@@ -6,15 +6,15 @@ const { Graph } = require("./adjacency-list");
  * @returns
  * @description 层层推进
  */
-function bfs(graph, start) {
+function bfs(graph: Graph, start: Vertex) {
   //
   const result = [];
   // 第 0 层
   const visited = new Set([start]);
-  const queue = [start];
+  const queue: Vertex[] = [start];
   while (queue.length > 0) {
     // 当前点 → 已记录
-    const v = queue.shift();
+    const v = queue.shift() as Vertex;
     // 改为 const v = queue.pop() 就是深度优先（后进先出，Stack）
     // const v = queue.pop();
     result.push(v);

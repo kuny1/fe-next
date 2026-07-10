@@ -1,4 +1,5 @@
-const { Graph } = require("../adjacency-list");
+//
+import { Graph } from '../adjacency-list';
 function basic_test() {
   const g = new Graph(true);
   g.addEdge("A", "B", 5);

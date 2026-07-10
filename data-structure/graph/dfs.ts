@@ -1,4 +1,5 @@
-const { Graph } = require("./adjacency-list");
+import { Graph, Vertex } from './adjacency-list';
+
 /**
  * 
  * @param {*} graph 
@@ -6,10 +7,10 @@ const { Graph } = require("./adjacency-list");
  * @returns 
  * @description 一条道走到黑
  */
-function dfs(graph, start) {
+function dfs(graph: Graph, start: Vertex) {
   const visited = new Set();
-  const result = [];
-  function traverse(v) {
+  const result: Vertex[] = [];
+  function traverse(v: Vertex) {
     visited.add(v);
     result.push(v);
     for (const neighbor of graph.adjList.get(v) || []) {
